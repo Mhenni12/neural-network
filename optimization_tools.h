@@ -3,7 +3,11 @@
 
 #include "types.h"
 
-// The loss function
-double loss(Neuron *output_layer, int *target, int input_num);
+// Loss function
+double loss(double predicted_output, int target_output);
+
+// gradient descent function
+
+double gradient_descent(double input, double target_output, double learning_rate, int num_iterations);
 
 #endif
