@@ -1,13 +1,37 @@
 #include "types.h"
+#include <math.h>
+#include "activation_functions.h"
+#include "derivative_activation_functions.h"
 
 // Loss function
-
-double loss(Neuron *output_layer, int *target, int input_num)
+double loss(double predicted_output, int target_output)
 {
-    double sum = 0;
-    for (int i = 0; i <= input_num; i++)
-    {
-        sum += target[i] * log(output_layer[i].output) + (1 - target[i]) * log(1 - output_layer[i].output);
-    }
-    return -(sum / input_num);
+    return -(target_output * log(predicted_output) + (1 - target_output) * log(1 - predicted_output));
 }
+
+// gradient descent function
+
+double gradient_descent(double input, double target_output, double learning_rate, int num_iterations)
+{
+    double weight = 0.5; // Initial weight
+    double bias = 0.5;   // Initial bias
+    double predicted_output, error, loss_value;
+
+    for (int i = 0; i < num_iterations; i++)
+    {
+        // determines the predicted output
+        predicted_output = sigmoid(weight * input + bias); // in this example, we used the Sigmoid function, we could use ReLU
+
+        // Backpropagation, it computes the gradients of the loss function with respect to the parameters, enabling the model to learn from the training data and improve its predictions over time
+        error = predicted_output - target_output;
+
+        // Gradient descent update
+        weight -= learning_rate * error * derivative_sigmoid(predicted_output) * input;
+        bias -= learning_rate * error * derivative_sigmoid(predicted_output);
+
+        // Calculate loss for monitoring
+        loss_value = loss(predicted_output, target_output);
+        printf("Iteration %d: Predicted Output = %.4f, Error = %.4f, Loss = %.4f\n", i + 1, predicted_output, error, loss_value);
+    }
+    printf("FINAL Predicted Output = %.4f,FINAL Error = %.4f,FINAL Loss = %.4f\n", predicted_output, error, loss_value);
+    return predicted_output;
