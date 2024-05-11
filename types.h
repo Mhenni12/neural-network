@@ -7,6 +7,7 @@ typedef struct Neuron
 {
     double output;
     double *weights_tab;
+    double bias;
     int activation_function;
 } Neuron;
 
